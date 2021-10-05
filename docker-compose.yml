@@ -1,0 +1,21 @@
+version: "3.5"
+
+services:
+  db:
+    image: mysql:8.0.23
+    container_name: db
+    ports:
+      - "3306:3306"
+
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: mercadolivre
+      MYSQL_USER: adriano
+      MYSQL_PASSWORD: adriano
+
+networks:
+  default:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.10.1.0/24
