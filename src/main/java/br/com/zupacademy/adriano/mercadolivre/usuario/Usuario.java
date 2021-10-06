@@ -1,9 +1,7 @@
 package br.com.zupacademy.adriano.mercadolivre.usuario;
 
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
-import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -13,8 +11,9 @@ import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "usuarios")
-@Validated
+@Table(name = "usuarios", uniqueConstraints = {
+    @UniqueConstraint(name = "uc_usuario_email", columnNames = "email")
+})
 public class Usuario {
     private @Id @GeneratedValue(strategy = GenerationType.IDENTITY) long id;
 
@@ -26,6 +25,10 @@ public class Usuario {
 
     @Column(nullable = false)
     private @PastOrPresent LocalDateTime dataCriacao;
+
+    @Deprecated
+    public Usuario() {
+    }
 
     public Usuario(@NotBlank @Email String email,
                    @NotBlank @Size(min = 6) SenhaLimpa senhaLimpa) {

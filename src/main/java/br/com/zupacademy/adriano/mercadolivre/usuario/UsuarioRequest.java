@@ -1,5 +1,7 @@
 package br.com.zupacademy.adriano.mercadolivre.usuario;
 
+import br.com.zupacademy.adriano.mercadolivre.validacoes.ValorUnico;
+
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -8,6 +10,7 @@ public class UsuarioRequest {
 
     @NotBlank
     @Email
+    @ValorUnico(classeDaEntidade = Usuario.class, nomeDoCampo = "email")
     private String email;
 
     @NotBlank
