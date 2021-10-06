@@ -1,25 +1,27 @@
 package br.com.zupacademy.adriano.mercadolivre.usuario;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 public class UsuarioRequest {
 
     @NotBlank
     @Email
-    private String login;
+    private String email;
 
     @NotBlank
     @Size(min = 6)
     private String senha;
 
     public UsuarioRequest(
-            @NotBlank @Email String login,
+            @NotBlank @Email String email,
             @NotBlank @Size(min = 6) String senha) {
-        this.login = login;
+        this.email = email;
         this.senha = senha;
     }
 
     public Usuario toModel() {
-        return new Usuario(this.login, this.senha);
+        return new Usuario(this.email, new SenhaLimpa(this.senha)) ;
     }
 }
