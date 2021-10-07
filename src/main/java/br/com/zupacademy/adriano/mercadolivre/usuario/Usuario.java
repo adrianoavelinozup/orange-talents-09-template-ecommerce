@@ -1,5 +1,7 @@
 package br.com.zupacademy.adriano.mercadolivre.usuario;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
@@ -9,6 +11,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
+import java.util.Collection;
 
 @Entity
 @Table(name = "usuarios", uniqueConstraints = {
@@ -38,5 +41,17 @@ public class Usuario {
         this.email = email;
         this.senha = senhaLimpa.hash();
         this.dataCriacao = LocalDateTime.now();
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getSenha() {
+        return senha;
     }
 }

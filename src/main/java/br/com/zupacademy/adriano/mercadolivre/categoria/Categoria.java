@@ -19,7 +19,7 @@ public class Categoria {
     @Column(nullable = false)
     private String nome;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Categoria categoria;
 
     @Deprecated
