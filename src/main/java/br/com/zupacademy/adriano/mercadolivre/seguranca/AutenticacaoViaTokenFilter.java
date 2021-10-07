@@ -1,7 +1,5 @@
 package br.com.zupacademy.adriano.mercadolivre.seguranca;
 
-import javax.servlet.Filter;
-
 import java.io.IOException;
 
 import javax.servlet.FilterChain;
@@ -38,9 +36,10 @@ public class AutenticacaoViaTokenFilter extends OncePerRequestFilter {
     }
 
     private void autenticarCliente(String token) {
-        Long idUsuario = tokenService.getIdUsuario(token);
-        Usuario usuario = repository.findById(idUsuario).get();
-        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(usuario, null, usuario.getAuthorities());
+        String email = tokenService.getEmail(token);
+        Usuario usuario = repository.findByEmail(email).get();
+        UsuarioLogado usuarioLogado = new UsuarioLogado(usuario);
+        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(usuarioLogado, null, usuarioLogado.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 

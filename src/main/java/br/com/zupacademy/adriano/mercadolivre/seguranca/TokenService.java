@@ -1,15 +1,14 @@
 package br.com.zupacademy.adriano.mercadolivre.seguranca;
 
-import java.util.Date;
-
-import br.com.zupacademy.adriano.mercadolivre.usuario.Usuario;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Service;
-
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Service;
+
+import java.util.Date;
 
 @Service
 public class TokenService {
@@ -21,14 +20,13 @@ public class TokenService {
     private String secret;
 
     public String gerarToken(Authentication authentication) {
-        Usuario logado = (Usuario) authentication.getPrincipal();
+        UserDetails usuario = (UserDetails) authentication.getPrincipal();
         Date hoje = new Date();
         Date dataExpiracao = new Date(hoje.getTime() + Long.parseLong(expiration));
-        String usuarioId = String.valueOf(logado.getId());
 
         return Jwts.builder()
                 .setIssuer("API do Mercado Livre")
-                .setSubject(usuarioId)
+                .setSubject(usuario.getUsername())
                 .setIssuedAt(hoje)
                 .setExpiration(dataExpiracao)
                 .signWith(SignatureAlgorithm.HS256, secret)
@@ -44,9 +42,9 @@ public class TokenService {
         }
     }
 
-    public Long getIdUsuario(String token) {
+    public String getEmail(String token) {
         Claims claims = Jwts.parser().setSigningKey(this.secret).parseClaimsJws(token).getBody();
-        return Long.parseLong(claims.getSubject());
+        return String.valueOf(claims.getSubject());
     }
 
 }

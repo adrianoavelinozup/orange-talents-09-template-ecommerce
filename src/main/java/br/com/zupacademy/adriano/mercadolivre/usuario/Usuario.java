@@ -17,7 +17,7 @@ import java.util.Collection;
 @Table(name = "usuarios", uniqueConstraints = {
     @UniqueConstraint(name = "uc_usuario_email", columnNames = "email")
 })
-public class Usuario implements UserDetails {
+public class Usuario {
     private @Id @GeneratedValue(strategy = GenerationType.IDENTITY) long id;
 
     @Column(nullable = false)
@@ -47,39 +47,11 @@ public class Usuario implements UserDetails {
         return id;
     }
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+    public String getEmail() {
+        return email;
     }
 
-    @Override
-    public String getPassword() {
-        return this.senha;
+    public String getSenha() {
+        return senha;
     }
-
-    @Override
-    public String getUsername() {
-        return this.email;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
-
 }
