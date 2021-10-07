@@ -1,5 +1,7 @@
 package br.com.zupacademy.adriano.mercadolivre.usuario;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
@@ -9,12 +11,13 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
+import java.util.Collection;
 
 @Entity
 @Table(name = "usuarios", uniqueConstraints = {
     @UniqueConstraint(name = "uc_usuario_email", columnNames = "email")
 })
-public class Usuario {
+public class Usuario implements UserDetails {
     private @Id @GeneratedValue(strategy = GenerationType.IDENTITY) long id;
 
     @Column(nullable = false)
@@ -39,4 +42,44 @@ public class Usuario {
         this.senha = senhaLimpa.hash();
         this.dataCriacao = LocalDateTime.now();
     }
+
+    public long getId() {
+        return id;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return null;
+    }
+
+    @Override
+    public String getPassword() {
+        return this.senha;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
 }
