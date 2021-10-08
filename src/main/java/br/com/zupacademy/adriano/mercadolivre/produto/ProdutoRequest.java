@@ -1,16 +1,16 @@
 package br.com.zupacademy.adriano.mercadolivre.produto;
 
 import br.com.zupacademy.adriano.mercadolivre.categoria.Categoria;
+import br.com.zupacademy.adriano.mercadolivre.validacao.ElementosUnicos;
 import br.com.zupacademy.adriano.mercadolivre.validacoes.ExisteId;
 import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.UniqueElements;
 
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 public class ProdutoRequest {
 
@@ -31,7 +31,8 @@ public class ProdutoRequest {
 
     @NotNull
     @Size(min = 3)
-    private Set<@Valid CaracteristicaProdutoRequest> caracteristicas = new HashSet<>();
+    @ElementosUnicos(classeDaEntidade = Object.class, nomeDoCampo = "caracteristicas")
+    private List<@Valid CaracteristicaProdutoRequest> caracteristicas = new ArrayList<>();
 
     @NotNull
     @ExisteId(classeDaEntidade = Categoria.class, nomeDoCampo = "id")
@@ -41,7 +42,7 @@ public class ProdutoRequest {
                           @NotNull @Min(1) BigDecimal valor,
                           @NotNull @Min(0) Integer quantidadeDisponivel,
                           @NotBlank @Length(max = 1000)String descricao,
-                          Set<CaracteristicaProdutoRequest> caracteristicas,
+                          @NotNull @Size(min = 3) List<@Valid CaracteristicaProdutoRequest> caracteristicas,
                           @NotNull Long categoriaId) {
         this.nome = nome;
         this.valor = valor;
@@ -51,7 +52,7 @@ public class ProdutoRequest {
         this.categoriaId = categoriaId;
     }
 
-    public Set<CaracteristicaProdutoRequest> getCaracteristicas() {
+    public @NotNull @Size(min = 3) List<@Valid CaracteristicaProdutoRequest> getCaracteristicas() {
         return caracteristicas;
     }
 

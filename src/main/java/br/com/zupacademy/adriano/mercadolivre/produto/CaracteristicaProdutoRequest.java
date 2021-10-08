@@ -12,21 +12,6 @@ public class CaracteristicaProdutoRequest {
     @NotBlank
     private String descricao;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        CaracteristicaProdutoRequest that = (CaracteristicaProdutoRequest) o;
-
-        return nome.equals(that.nome);
-    }
-
-    @Override
-    public int hashCode() {
-        return nome.hashCode();
-    }
-
     public String getNome() {
         return nome;
     }

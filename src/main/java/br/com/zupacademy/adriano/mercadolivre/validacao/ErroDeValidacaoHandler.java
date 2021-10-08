@@ -34,11 +34,6 @@ public class ErroDeValidacaoHandler {
             errosDto.add(erro);
         });
 
-        globalErrors.forEach(e -> {
-            ErroDto erro = new ErroDto("campoooo", e.getDefaultMessage());
-            errosDto.add(erro);
-        });
-
         return errosDto;
     }
 
