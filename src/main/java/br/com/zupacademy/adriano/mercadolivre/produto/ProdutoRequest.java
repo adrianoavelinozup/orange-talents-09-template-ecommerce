@@ -1,15 +1,20 @@
 package br.com.zupacademy.adriano.mercadolivre.produto;
 
 import br.com.zupacademy.adriano.mercadolivre.categoria.Categoria;
+import br.com.zupacademy.adriano.mercadolivre.usuario.Usuario;
 import br.com.zupacademy.adriano.mercadolivre.validacao.ElementosUnicos;
 import br.com.zupacademy.adriano.mercadolivre.validacoes.ExisteId;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.util.Assert;
 
+import javax.persistence.EntityManager;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class ProdutoRequest {
 
@@ -55,6 +60,10 @@ public class ProdutoRequest {
         return caracteristicas;
     }
 
+    public void setCaracteristicas(List<CaracteristicaProdutoRequest> caracteristicas) {
+        this.caracteristicas = caracteristicas;
+    }
+
     @Override
     public String toString() {
         return "ProdutoRequest{" +
@@ -65,5 +74,17 @@ public class ProdutoRequest {
                 ", caracteristicas=" + caracteristicas +
                 ", categoriaId=" + categoriaId +
                 '}';
+    }
+
+    public Produto toModel(EntityManager entityManager, Usuario dono) {
+        Categoria categoria = entityManager.find(Categoria.class, this.categoriaId);
+        Produto produto = null;
+
+        if (categoria != null) {
+             produto = new Produto(this.nome, this.valor, this.quantidadeDisponivel, this.descricao, categoria, this.caracteristicas, dono);
+            return produto;
+        }
+        Assert.notNull(categoria, "Categoria não pode ser nula");
+        return produto;
     }
 }

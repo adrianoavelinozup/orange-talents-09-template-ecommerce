@@ -1,9 +1,10 @@
 package br.com.zupacademy.adriano.mercadolivre.produto;
 
-import org.springframework.util.Assert;
-import org.springframework.util.StringUtils;
+import br.com.zupacademy.adriano.mercadolivre.categoria.Categoria;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 public class CaracteristicaProdutoRequest {
     @NotBlank
@@ -18,6 +19,10 @@ public class CaracteristicaProdutoRequest {
 
     public String getDescricao() {
         return descricao;
+    }
+
+    public CaracteristicaProduto toModel(@NotNull @Valid Produto produto) {
+        return new CaracteristicaProduto(this.nome, this.descricao, produto);
     }
 
     @Override
