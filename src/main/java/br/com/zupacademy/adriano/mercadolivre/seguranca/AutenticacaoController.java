@@ -1,5 +1,7 @@
 package br.com.zupacademy.adriano.mercadolivre.seguranca;
 
+import br.com.zupacademy.adriano.mercadolivre.validacao.ErroDto;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -26,7 +28,7 @@ public class AutenticacaoController {
     }
 
     @PostMapping
-    public ResponseEntity<TokenDto> autenticar(@RequestBody @Valid LoginRequest form) {
+    public ResponseEntity<?> autenticar(@RequestBody @Valid LoginRequest form) {
         UsernamePasswordAuthenticationToken dadosLogin = form.converter();
 
         try {
@@ -34,7 +36,8 @@ public class AutenticacaoController {
             String token = tokenService.gerarToken(authentication);
             return ResponseEntity.ok(new TokenDto(token, "Bearer"));
         } catch (AuthenticationException e) {
-            return ResponseEntity.badRequest().build();
+            ErroDto erroDto = new ErroDto("erro", "usuário ou senha inválidos");
+            return new ResponseEntity<ErroDto>(erroDto, HttpStatus.UNAUTHORIZED);
         }
     }
 
