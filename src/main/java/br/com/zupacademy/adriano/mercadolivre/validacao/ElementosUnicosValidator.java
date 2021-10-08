@@ -8,19 +8,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ElementosUnicosValidator implements ConstraintValidator<ElementosUnicos, Object> {
-    private String nomeDoCampo;
-    private Class<?> classeDaEntidade;
+    private String elementos;
 
     @Override
     public void initialize(ElementosUnicos constraintAnnotation) {
-        nomeDoCampo = constraintAnnotation.nomeDoCampo();
-        classeDaEntidade = constraintAnnotation.classeDaEntidade();
+        elementos = constraintAnnotation.nomeDoCampo();
     }
 
     @Override
-    public boolean isValid(Object valorDoNomeDoCampo, ConstraintValidatorContext constraintValidatorContext) {
+    public boolean isValid(Object elementos, ConstraintValidatorContext constraintValidatorContext) {
 
-        List<CaracteristicaProdutoRequest> caracteristicas = (List<CaracteristicaProdutoRequest>) valorDoNomeDoCampo;
+        List<CaracteristicaProdutoRequest> caracteristicas = (List<CaracteristicaProdutoRequest>) elementos;
         List<String> nomesDasCaracteristica = new ArrayList<>();
 
         caracteristicas.forEach( e -> {
@@ -28,7 +26,6 @@ public class ElementosUnicosValidator implements ConstraintValidator<ElementosUn
                nomesDasCaracteristica.add(e.getNome());
            }
         });
-
 
         return nomesDasCaracteristica.size() == caracteristicas.size();
     }

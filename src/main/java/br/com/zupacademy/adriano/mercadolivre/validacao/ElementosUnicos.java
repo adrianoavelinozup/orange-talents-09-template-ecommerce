@@ -16,6 +16,4 @@ public @interface ElementosUnicos {
     Class<? extends Payload>[] payload() default { };
 
     String nomeDoCampo();
-
-    Class<?> classeDaEntidade();
 }

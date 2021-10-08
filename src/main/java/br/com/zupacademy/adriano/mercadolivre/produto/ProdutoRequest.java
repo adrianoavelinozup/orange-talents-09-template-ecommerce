@@ -9,7 +9,6 @@ import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 public class ProdutoRequest {
@@ -31,7 +30,7 @@ public class ProdutoRequest {
 
     @NotNull
     @Size(min = 3)
-    @ElementosUnicos(classeDaEntidade = Object.class, nomeDoCampo = "caracteristicas")
+    @ElementosUnicos(nomeDoCampo = "caracteristicas", message = "não deve conter característica com nome repetido. Escolha nomes diferentes")
     private List<@Valid CaracteristicaProdutoRequest> caracteristicas = new ArrayList<>();
 
     @NotNull
