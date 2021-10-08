@@ -3,11 +3,14 @@ package br.com.zupacademy.adriano.mercadolivre.produto;
 import br.com.zupacademy.adriano.mercadolivre.categoria.Categoria;
 import br.com.zupacademy.adriano.mercadolivre.usuario.Usuario;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.util.Assert;
 
 import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -35,6 +38,9 @@ public class Produto {
     @NotBlank @Length(max = 1000)
     @Column(nullable = false)
     private String descricao;
+
+    @NotNull
+    private LocalDateTime dataCriacao = LocalDateTime.now();
 
     @ManyToOne
     @NotNull
@@ -66,6 +72,7 @@ public class Produto {
 
         this.caracteristicas.addAll(conjuntoCaracteristicas);
         this.dono = dono;
+        Assert.isTrue(this.caracteristicas.size() >= 3, "Todo produto precisa ter no mínimo 3 ou mais características");
     }
 
 }
