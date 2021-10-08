@@ -2,16 +2,14 @@ package br.com.zupacademy.adriano.mercadolivre.produto;
 
 import br.com.zupacademy.adriano.mercadolivre.categoria.Categoria;
 import br.com.zupacademy.adriano.mercadolivre.validacoes.ExisteId;
-import com.fasterxml.jackson.annotation.JsonAlias;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.UniqueElements;
 
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class ProdutoRequest {
@@ -33,7 +31,7 @@ public class ProdutoRequest {
 
     @NotNull
     @Size(min = 3)
-    private List<@Valid CaracteristicaProdutoRequest> caracteristicas = new ArrayList<>();
+    private Set<@Valid CaracteristicaProdutoRequest> caracteristicas = new HashSet<>();
 
     @NotNull
     @ExisteId(classeDaEntidade = Categoria.class, nomeDoCampo = "id")
@@ -43,7 +41,7 @@ public class ProdutoRequest {
                           @NotNull @Min(1) BigDecimal valor,
                           @NotNull @Min(0) Integer quantidadeDisponivel,
                           @NotBlank @Length(max = 1000)String descricao,
-                          @NotNull @Size(min = 3) List<CaracteristicaProdutoRequest> caracteristicas,
+                          Set<CaracteristicaProdutoRequest> caracteristicas,
                           @NotNull Long categoriaId) {
         this.nome = nome;
         this.valor = valor;
@@ -53,7 +51,7 @@ public class ProdutoRequest {
         this.categoriaId = categoriaId;
     }
 
-    public List<CaracteristicaProdutoRequest> getCaracteristicas() {
+    public Set<CaracteristicaProdutoRequest> getCaracteristicas() {
         return caracteristicas;
     }
 
