@@ -34,6 +34,11 @@ public class ErroDeValidacaoHandler {
             errosDto.add(erro);
         });
 
+        globalErrors.forEach(e -> {
+            ErroDto erro = new ErroDto("xxx", "deu ruim");
+            errosDto.add(erro);
+        });
+
         return errosDto;
     }
 

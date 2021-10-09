@@ -53,6 +53,9 @@ public class Produto {
     @OneToMany(mappedBy = "produto", cascade = CascadeType.PERSIST)
     Set<@Valid CaracteristicaProduto> caracteristicas = new HashSet<>();
 
+    @OneToMany(mappedBy = "produto", cascade = CascadeType.MERGE)
+    Set<@Valid ImagemProduto> imagens = new HashSet<>();
+
     @Deprecated
     public Produto() {
     }
@@ -79,4 +82,14 @@ public class Produto {
         Assert.isTrue(this.caracteristicas.size() >= 3, "Todo produto precisa ter no mínimo 3 ou mais características");
     }
 
+    public Usuario getDono() {
+        return dono;
+    }
+
+    public void adicionarImagens(@Size(min = 1) Set<String> imagens) {
+        Set<ImagemProduto> imagensDoProduto = imagens.stream().map(imagem -> {
+            return new ImagemProduto(imagem, this);
+        }).collect(Collectors.toSet());
+        this.imagens.addAll(imagensDoProduto);
+    }
 }
