@@ -7,6 +7,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityManager;
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -15,28 +16,20 @@ public class PerguntaRequest {
     private String titulo;
 
     @NotNull
-    @ExisteId(classeDaEntidade = Usuario.class, nomeDoCampo = "id")
-    private Long usuarioId;
-
-    @NotNull
     @ExisteId(classeDaEntidade = Produto.class, nomeDoCampo = "id")
     private Long produtoId;
 
 
     public PerguntaRequest(@NotBlank String titulo,
-                           @NotBlank Long usuarioId,
                            @NotBlank Long produtoId) {
         Assert.isTrue(StringUtils.hasLength(titulo), "Título não pode estar em branco");
-        Assert.notNull(usuarioId, "Id do usuário não pode ser nulo");
         Assert.notNull(produtoId, "Id do produto não pode ser nulo");
         this.titulo = titulo;
-        this.usuarioId = usuarioId;
         this.produtoId = produtoId;
     }
 
-    public Pergunta toModel(EntityManager entityManager) {
+    public Pergunta toModel(@NotNull EntityManager entityManager,@NotNull @Valid Usuario usuario) {
         Produto produto = entityManager.find(Produto.class, produtoId);
-        Usuario usuario = entityManager.find(Usuario.class, produtoId);
 
         Assert.isTrue(StringUtils.hasLength(this.titulo), "Título não pode estar em branco");
         Assert.notNull(usuario, "Usuário não pode estar nulo");
