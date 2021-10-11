@@ -11,22 +11,11 @@ import java.util.Optional;
 public interface ProdutoRepository extends CrudRepository<Produto, Long> {
 
     @Query("SELECT produto FROM Produto produto " +
-            " INNER JOIN FETCH produto.dono dono " +
             " INNER JOIN FETCH produto.opnioes opniao " +
             " INNER JOIN FETCH produto.imagens imagem " +
             " INNER JOIN FETCH produto.caracteristicas caracteristica " +
-            " INNER JOIN FETCH opniao.usuario usuarioOpniao " +
+            " INNER JOIN FETCH produto.perguntas perguntas " +
             " WHERE produto.id = :id")
     Optional<Produto> findByIdOtimizada(@Param("id") Long id);
-
-    @Query("SELECT AVG(opniao.nota) FROM Produto produto " +
-            " INNER JOIN produto.opnioes opniao " +
-            " WHERE produto.id = :id group by produto.id ")
-    Long findMediaNotaPorId4(@Param("id") Long id);
-
-    @Query("SELECT COUNT(produto.id) FROM Produto produto " +
-            " INNER JOIN produto.opnioes opniao " +
-            " WHERE produto.id = :id group by produto.id ")
-    Long findQuantidadeTotaLDeNotas(@Param("id") Long id);
 
 }

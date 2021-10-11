@@ -11,9 +11,9 @@ import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Entity
@@ -57,7 +57,7 @@ public class Produto {
     Set<@Valid ImagemProduto> imagens = new HashSet<>();
 
     @OneToMany(mappedBy = "produto")
-    List<Opniao> opnioes = new ArrayList<>();
+    Set<Opniao> opnioes = new HashSet<>();
 
     @OneToMany(mappedBy = "produto")
     List<Pergunta> perguntas = new ArrayList<>();
@@ -100,22 +100,6 @@ public class Produto {
         return descricao;
     }
 
-    public Set<CaracteristicaProduto> getCaracteristicas() {
-        return caracteristicas;
-    }
-
-    public Set<ImagemProduto> getImagens() {
-        return imagens;
-    }
-
-    public List<Opniao> getOpnioes() {
-        return opnioes;
-    }
-
-    public List<Pergunta> getPerguntas() {
-        return perguntas;
-    }
-
     public Usuario getDono() {
         return dono;
     }
@@ -125,5 +109,24 @@ public class Produto {
             return new ImagemProduto(imagem, this);
         }).collect(Collectors.toSet());
         this.imagens.addAll(imagensDoProduto);
+    }
+    public <T> Set<T> mapeiaCaracteristicas(
+            Function<CaracteristicaProduto, T> funcaoMapeadora) {
+        return this.caracteristicas.stream().map(funcaoMapeadora)
+                .collect(Collectors.toSet());
+    }
+
+    public <T> Set<T> mapeiaImagens(Function<ImagemProduto, T> funcaoMapeadora) {
+        return this.imagens.stream().map(funcaoMapeadora)
+                .collect(Collectors.toSet());
+    }
+
+    public <T extends Comparable<T>> SortedSet<T> mapeiaPerguntas(Function<Pergunta, T> funcaoMapeadora) {
+        return this.perguntas.stream().map(funcaoMapeadora)
+                .collect(Collectors.toCollection(TreeSet :: new));
+    }
+
+    public Opnioes getOpinioes() {
+        return new Opnioes(this.opnioes);
     }
 }

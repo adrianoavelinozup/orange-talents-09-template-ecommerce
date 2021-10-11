@@ -2,17 +2,17 @@ package br.com.zupacademy.adriano.mercadolivre.pergunta;
 
 import br.com.zupacademy.adriano.mercadolivre.produto.Produto;
 import br.com.zupacademy.adriano.mercadolivre.usuario.Usuario;
-import org.springframework.beans.factory.annotation.Value;
 
 import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @Table(name = "perguntas")
-public class Pergunta {
+public class Pergunta implements Comparable<Pergunta> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -49,15 +49,25 @@ public class Pergunta {
         return titulo;
     }
 
-    public Usuario getUsuario() {
-        return this.usuario;
-    }
-
-    public Produto getProduto() {
-        return this.produto;
-    }
-
     public String getEmailDoDonoDoProduto() {
         return this.produto.getDono().getEmail();
+    }
+
+    @Override
+    public int compareTo(Pergunta o) {
+        return this.titulo.compareTo(o.titulo);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Pergunta pergunta = (Pergunta) o;
+        return titulo.equals(pergunta.titulo) && usuario.equals(pergunta.usuario) && produto.equals(pergunta.produto);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(titulo, usuario, produto);
     }
 }

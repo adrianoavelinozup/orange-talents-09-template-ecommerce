@@ -17,8 +17,8 @@ public class ServicoDeEmail {
 
     public void enviar(@NotNull @Valid Pergunta pergunta) {
         mailer.enviar("<html>...</html>",
-                "Nova pergunta",
-                pergunta.getUsuario().getEmail(),
+                "Nova pergunta: " + pergunta.getTitulo(),
+                pergunta.getEmailDoDonoDoProduto(),
                 from,
                 pergunta.getEmailDoDonoDoProduto());
     }

@@ -22,11 +22,10 @@ public class ProdutoDetalhadoController {
     public ResponseEntity<Object> buscarPorId(@PathVariable Long id) {
         Optional<Produto> possivelProduto = produtoRepository.findByIdOtimizada(id);
         if (possivelProduto.isPresent()) {
-            Long notaMediaDoProduto = produtoRepository.findMediaNotaPorId4(id);
-            Long totalDeAvaliacoes = produtoRepository.findQuantidadeTotaLDeNotas(id);
-            ProdutoDetalhadoResponse produtoDetalhadoResponse = new ProdutoDetalhadoResponse(possivelProduto.get(), notaMediaDoProduto, totalDeAvaliacoes);
+            ProdutoDetalhadoResponse produtoDetalhadoResponse = new ProdutoDetalhadoResponse(possivelProduto.get());
             return ResponseEntity.ok(produtoDetalhadoResponse);
         }
+
         return ResponseEntity.notFound().build();
     }
 }

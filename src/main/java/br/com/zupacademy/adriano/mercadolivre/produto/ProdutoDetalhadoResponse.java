@@ -1,35 +1,38 @@
 package br.com.zupacademy.adriano.mercadolivre.produto;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.*;
 
 public class ProdutoDetalhadoResponse {
     private String nome;
     private BigDecimal preco;
     private String descricao;
-    private Long notaMedia;
-    private Long totalDeAvaliacoes;
-    private List<CaracteristicaProdutoResponse> caracteristicas = new ArrayList<>();
-    private List<String> imagens;
-    private List<OpniaoResponse> opnioes = new ArrayList<>();
-    private List<PerguntaResponse> perguntas = new ArrayList<>();
+    private double notaMedia;
+    private int totalDeAvaliacoes;
+    private Set<CaracteristicaProdutoResponse> caracteristicas;
+    private Set<String> imagens;
+    private Set<Map<String,String>> opinioes;
+    private SortedSet<String> perguntas;
 
-    public ProdutoDetalhadoResponse(Produto produto, Long notaMedia, Long totalDeAvaliacoes) {
+    public ProdutoDetalhadoResponse(Produto produto) {
         this.nome = produto.getNome();
         this.preco = produto.getValor();
         this.descricao = produto.getDescricao();
         this.notaMedia = notaMedia;
         this.totalDeAvaliacoes = totalDeAvaliacoes;
-        this.caracteristicas.addAll(produto.getCaracteristicas().stream()
-                .map(CaracteristicaProdutoResponse::new).collect(Collectors.toList()));
-        this.imagens = produto.getImagens().stream()
-                .map(ImagemProduto::getUrl).collect(Collectors.toList());
-        this.perguntas = produto.getPerguntas().stream()
-                .map(PerguntaResponse::new).collect(Collectors.toList());
-        this.opnioes = produto.getOpnioes().stream()
-                .map(OpniaoResponse::new).collect(Collectors.toList());
+        this.caracteristicas = produto
+                .mapeiaCaracteristicas(CaracteristicaProdutoResponse::new);
+        this.imagens = produto.mapeiaImagens(imagem -> imagem.getUrl());
+        this.perguntas = produto.mapeiaPerguntas(pergunta -> pergunta.getTitulo());
+
+        Opnioes opnioes = produto.getOpinioes();
+        this.opinioes = opnioes.mapeiaOpinioes(opiniao -> {
+            return Map.of("titulo",opiniao.getTitulo(),"descricao",opiniao.getDescricao());
+        });
+
+
+        this.notaMedia = opnioes.media();
+        this.totalDeAvaliacoes = opnioes.total();
     }
 
     public String getNome() {
@@ -44,27 +47,27 @@ public class ProdutoDetalhadoResponse {
         return descricao;
     }
 
-    public Long getNotaMedia() {
+    public double getNotaMedia() {
         return notaMedia;
     }
 
-    public Long getTotalDeAvaliacoes() {
+    public int getTotalDeAvaliacoes() {
         return totalDeAvaliacoes;
     }
 
-    public List<CaracteristicaProdutoResponse> getCaracteristicas() {
+    public Set<CaracteristicaProdutoResponse> getCaracteristicas() {
         return caracteristicas;
     }
 
-    public List<String> getImagens() {
+    public Set<String> getImagens() {
         return imagens;
     }
 
-    public List<OpniaoResponse> getOpnioes() {
-        return opnioes;
+    public Set<Map<String, String>> getOpnioes() {
+        return opinioes;
     }
 
-    public List<PerguntaResponse> getPerguntas() {
+    public SortedSet<String> getPerguntas() {
         return perguntas;
     }
 }
