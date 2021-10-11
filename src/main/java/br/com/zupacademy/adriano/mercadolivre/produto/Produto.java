@@ -1,6 +1,8 @@
 package br.com.zupacademy.adriano.mercadolivre.produto;
 
 import br.com.zupacademy.adriano.mercadolivre.categoria.Categoria;
+import br.com.zupacademy.adriano.mercadolivre.opniao.Opniao;
+import br.com.zupacademy.adriano.mercadolivre.pergunta.Pergunta;
 import br.com.zupacademy.adriano.mercadolivre.usuario.Usuario;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.util.Assert;
@@ -11,9 +13,7 @@ import javax.validation.constraints.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Entity
@@ -42,12 +42,12 @@ public class Produto {
     @NotNull
     private LocalDateTime dataCriacao = LocalDateTime.now();
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @NotNull
     private Categoria categoria;
 
     @NotNull
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Usuario dono;
 
     @OneToMany(mappedBy = "produto", cascade = CascadeType.PERSIST)
@@ -55,6 +55,12 @@ public class Produto {
 
     @OneToMany(mappedBy = "produto", cascade = CascadeType.MERGE)
     Set<@Valid ImagemProduto> imagens = new HashSet<>();
+
+    @OneToMany(mappedBy = "produto")
+    List<Opniao> opnioes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "produto")
+    List<Pergunta> perguntas = new ArrayList<>();
 
     @Deprecated
     public Produto() {
@@ -80,6 +86,34 @@ public class Produto {
         this.caracteristicas.addAll(conjuntoCaracteristicas);
         this.dono = dono;
         Assert.isTrue(this.caracteristicas.size() >= 3, "Todo produto precisa ter no mínimo 3 ou mais características");
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public BigDecimal getValor() {
+        return valor;
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
+
+    public Set<CaracteristicaProduto> getCaracteristicas() {
+        return caracteristicas;
+    }
+
+    public Set<ImagemProduto> getImagens() {
+        return imagens;
+    }
+
+    public List<Opniao> getOpnioes() {
+        return opnioes;
+    }
+
+    public List<Pergunta> getPerguntas() {
+        return perguntas;
     }
 
     public Usuario getDono() {

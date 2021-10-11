@@ -22,7 +22,7 @@ public class CaracteristicaProduto {
     @Column(nullable = false)
     private String descricao;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @NotNull
     @Valid
     private Produto produto;

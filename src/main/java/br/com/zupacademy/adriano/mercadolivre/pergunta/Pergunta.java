@@ -22,12 +22,12 @@ public class Pergunta {
     private String titulo;
 
     @NotNull
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @Valid
     private Usuario usuario;
 
     @NotNull
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @Valid
     private Produto produto;
 
@@ -43,6 +43,10 @@ public class Pergunta {
         this.usuario = usuario;
         this.produto = produto;
         this.dataCriacao = LocalDateTime.now();
+    }
+
+    public String getTitulo() {
+        return titulo;
     }
 
     public Usuario getUsuario() {

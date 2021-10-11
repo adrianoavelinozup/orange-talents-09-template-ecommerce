@@ -1,5 +1,8 @@
 package br.com.zupacademy.adriano.mercadolivre.usuario;
 
+import br.com.zupacademy.adriano.mercadolivre.opniao.Opniao;
+import br.com.zupacademy.adriano.mercadolivre.pergunta.Pergunta;
+import br.com.zupacademy.adriano.mercadolivre.produto.Produto;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.Assert;
@@ -11,7 +14,9 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 @Entity

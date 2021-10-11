@@ -33,11 +33,11 @@ public class Opniao {
     @Column(nullable = false)
     private String descricao;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @NotNull
     private Produto produto;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @NotNull
     private Usuario usuario;
 
@@ -56,5 +56,21 @@ public class Opniao {
         this.descricao = descricao;
         this.produto = produto;
         this.usuario = usuario;
+    }
+
+    public Integer getNota() {
+        return nota;
+    }
+
+    public String getTitulo() {
+        return titulo;
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
     }
 }

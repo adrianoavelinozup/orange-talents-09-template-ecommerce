@@ -19,7 +19,7 @@ public class ImagemProduto {
     @Column(nullable = false)
     private String url;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @NotNull
     private Produto produto;
 
@@ -43,5 +43,9 @@ public class ImagemProduto {
     public ImagemProduto(String url, Produto produto) {
         this.url = url;
         this.produto = produto;
+    }
+
+    public String getUrl() {
+        return url;
     }
 }
