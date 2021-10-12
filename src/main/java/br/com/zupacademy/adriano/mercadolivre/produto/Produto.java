@@ -129,4 +129,14 @@ public class Produto {
     public Opnioes getOpinioes() {
         return new Opnioes(this.opnioes);
     }
+
+    public boolean temEstoque(@NotNull @Min(1) Integer quantidade) {
+        return this.quantidadeDisponivel >= quantidade;
+    }
+
+    public void abateEstoque(@NotNull @Positive Integer quantidade) {
+        if (this.temEstoque(quantidade)) {
+            this.quantidadeDisponivel = this.quantidadeDisponivel - quantidade;
+        }
+    }
 }
