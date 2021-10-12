@@ -29,6 +29,9 @@ public class PerguntaController {
                           @AuthenticationPrincipal UsuarioLogado usuarioLogado) {
         Pergunta pergunta = perguntaRequest.toModel(entityManager, usuarioLogado.getUsuario());
         entityManager.persist(pergunta);
-        servicoDeEmail.enviar(pergunta);
+        DadosDoEmail dadosDoEmail = new DadosDoEmail("Compra iniciada com sucesso!",
+                 "Nova Pergunta: " + pergunta.getTitulo(),
+                pergunta.getEmailDoDonoDoProduto());
+        servicoDeEmail.enviar(dadosDoEmail);
     }
 }

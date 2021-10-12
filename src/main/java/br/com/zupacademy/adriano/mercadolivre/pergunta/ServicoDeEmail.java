@@ -12,14 +12,12 @@ public class ServicoDeEmail {
     @Autowired
     private Mailer mailer;
 
-    @Value("${mercadolivre.email.naoresponda}")
-    private String from;
+//    @Value("${mercadolivre.email.naoresponda}")
+//    private String from;
 
-    public void enviar(@NotNull @Valid Pergunta pergunta) {
-        mailer.enviar("<html>...</html>",
-                "Nova pergunta: " + pergunta.getTitulo(),
-                pergunta.getEmailDoDonoDoProduto(),
-                from,
-                pergunta.getEmailDoDonoDoProduto());
+    public void enviar(DadosDoEmail dadosDoEmail) {
+        mailer.enviar(dadosDoEmail);
     }
+
+
 }
