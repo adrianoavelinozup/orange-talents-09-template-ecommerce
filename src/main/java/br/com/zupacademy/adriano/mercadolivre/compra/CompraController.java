@@ -39,8 +39,7 @@ public class CompraController {
         if(produto.temEstoque(compra.getQuantidade())) {
             produto.abateEstoque(compra.getQuantidade());
             entityManager.persist(compra);
-            DadosDoEmail dadosDoEmail = new DadosDoEmail("Compra iniciada com sucesso!", "Compra iniciada", produto.getDono().getEmail());
-            servicoDeEmail.enviar(dadosDoEmail);
+            servicoDeEmail.enviarEmailNovaCompra(produto);
             String urlPagamento = compra.getFormaPagamento().getGatewayPagamento().encaminharPagamento(compra);
             return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(urlPagamento)).build();
         }
