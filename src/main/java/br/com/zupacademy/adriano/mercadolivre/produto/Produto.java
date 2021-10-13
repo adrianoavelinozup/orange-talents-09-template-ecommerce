@@ -135,8 +135,9 @@ public class Produto {
     }
 
     public void abateEstoque(@NotNull @Positive Integer quantidade) {
+        Assert.isTrue(quantidade > 0, "A quantidade deve ser maior que zero para abater o estoque " + quantidade);
         if (this.temEstoque(quantidade)) {
-            this.quantidadeDisponivel = this.quantidadeDisponivel - quantidade;
+            this.quantidadeDisponivel -= quantidade;
         }
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -59,6 +60,11 @@ public class ErroDeValidacaoHandler {
     @ExceptionHandler(ResponseStatusException.class)
     public ResponseEntity<?> handleResposeEntityExceptions(ResponseStatusException ex, WebRequest request) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErroDto("quantidade", ex.getReason()));
+    }
+
+    @ExceptionHandler(BindException.class)
+    public ResponseEntity<?> handleResposeEntityExceptions(BindException ex, WebRequest request) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErroDto("quantidade", ex.getGlobalErrors().get(0).getDefaultMessage()));
     }
 
 }

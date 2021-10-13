@@ -2,6 +2,7 @@ package br.com.zupacademy.adriano.mercadolivre.compra;
 
 import br.com.zupacademy.adriano.mercadolivre.produto.Produto;
 import br.com.zupacademy.adriano.mercadolivre.usuario.Usuario;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.persistence.*;
 import javax.validation.Valid;
@@ -71,15 +72,15 @@ public class Compra {
         return id;
     }
 
-    public FormaPagamento getFormaPagamento() {
-        return formaPagamento;
-    }
-
     public Produto getProduto() {
         return produto;
     }
 
     public Integer getQuantidade() {
         return quantidade;
+    }
+
+    public String gerarUrlDeRetorno(UriComponentsBuilder uriComponentsBuilder) {
+        return formaPagamento.getGatewayPagamento().criarUrlDeRetorno(this,uriComponentsBuilder);
     }
 }

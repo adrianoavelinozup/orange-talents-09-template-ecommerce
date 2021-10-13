@@ -1,15 +1,12 @@
 package br.com.zupacademy.adriano.mercadolivre.compra;
 
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.util.UriComponentsBuilder;
 
 public class PagamentoPagSeguro implements GatewayPagamento {
-
-    private String urlPagamento = "pagseguro.com?returnId=%d&redirectUrl=%s";
-
-    private String urlRedirecionamento = "localhost:8080/compras/%d";
-
     @Override
-    public String encaminharPagamento(Compra compra) {
-        return String.format(urlPagamento, compra.getId(), String.format(urlRedirecionamento, compra.getId()));
+    public String criarUrlDeRetorno(Compra compra, UriComponentsBuilder uriComponentsBuilder) {
+        String urlRetorno = UriComponentsBuilder.fromUriString("/retorno-pagseguro/{id}").buildAndExpand(compra.getId()).toUri().toString();
+        return "pagseguro.com/" + compra.getId() + "?redirectUrl="
+                + urlRetorno;
     }
 }
