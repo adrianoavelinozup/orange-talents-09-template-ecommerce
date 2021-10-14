@@ -54,7 +54,7 @@ public class ErroDeValidacaoHandler {
         if (message.contains("br.com.zupacademy.adriano.mercadolivre.compra.FormaPagamento")) {
             return new ErroDto("formaPagamento", "Valor inválido. O valor deve ser: PAYPAL ou PAGSEGURO");
         }
-        return new ErroDto("error", message);
+        return new ErroDto("error", ex.getRootCause().getLocalizedMessage());
     }
 
     @ExceptionHandler(ResponseStatusException.class)
@@ -65,6 +65,11 @@ public class ErroDeValidacaoHandler {
     @ExceptionHandler(BindException.class)
     public ResponseEntity<?> handleResposeEntityExceptions(BindException ex, WebRequest request) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErroDto("quantidade", ex.getGlobalErrors().get(0).getDefaultMessage()));
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<?> handleResposeEntityExceptions(IllegalArgumentException ex, WebRequest request) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErroDto("erro", ex.getMessage()));
     }
 
 }
