@@ -16,11 +16,11 @@ import javax.validation.Valid;
 public class PerguntaController {
 
     private final EntityManager entityManager;
-    private final Servicos servicos;
+    private final ServicoEmail servicoEmail;
 
-    public PerguntaController(EntityManager entityManager, Servicos servicos) {
+    public PerguntaController(EntityManager entityManager, ServicoEmail servicoEmail) {
         this.entityManager = entityManager;
-        this.servicos = servicos;
+        this.servicoEmail = servicoEmail;
     }
 
     @PostMapping
@@ -29,6 +29,6 @@ public class PerguntaController {
                           @AuthenticationPrincipal UsuarioLogado usuarioLogado) {
         Pergunta pergunta = perguntaRequest.toModel(entityManager, usuarioLogado.getUsuario());
         entityManager.persist(pergunta);
-        servicos.enviarEmailNovaPergunta(pergunta);
+        servicoEmail.enviarEmailNovaPergunta(pergunta);
     }
 }

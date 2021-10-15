@@ -5,7 +5,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 public class PagamentoPagSeguro implements GatewayPagamento {
     @Override
     public String criarUrlDeRetorno(Compra compra, UriComponentsBuilder uriComponentsBuilder) {
-        String urlRetorno = UriComponentsBuilder.fromUriString("/retorno-pagseguro/{id}").buildAndExpand(compra.getId()).toUri().toString();
+        String urlRetorno = uriComponentsBuilder.path("/retorno-pagseguro/{id}").buildAndExpand(compra.getId()).toUri().toString();
         return "pagseguro.com/" + compra.getId() + "?redirectUrl="
                 + urlRetorno;
     }

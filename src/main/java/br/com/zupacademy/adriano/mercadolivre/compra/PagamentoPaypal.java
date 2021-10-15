@@ -7,7 +7,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 public class PagamentoPaypal implements GatewayPagamento {
     @Override
     public String criarUrlDeRetorno(Compra compra, UriComponentsBuilder uriComponentsBuilder) {
-        String urlRetorno = uriComponentsBuilder.path("/retorno-paypal/{id}").buildAndExpand(compra.getId()).toString();
+        String urlRetorno = uriComponentsBuilder.path("/retorno-paypal/{id}").buildAndExpand(compra.getId()).toUri().toString();
         return "paypal.com/" + compra.getId() + "?redirectUrl="
                 + urlRetorno;
     }

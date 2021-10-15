@@ -1,6 +1,6 @@
 package br.com.zupacademy.adriano.mercadolivre.compra;
 
-import br.com.zupacademy.adriano.mercadolivre.pergunta.Servicos;
+import br.com.zupacademy.adriano.mercadolivre.pergunta.ServicoEmail;
 import br.com.zupacademy.adriano.mercadolivre.produto.Produto;
 import br.com.zupacademy.adriano.mercadolivre.seguranca.UsuarioLogado;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -20,12 +20,12 @@ import javax.validation.Valid;
 public class CompraController {
 
     private final EntityManager entityManager;
-    private final Servicos servicos;
+    private final ServicoEmail servicoEmail;
 
 
-    public CompraController(EntityManager entityManager, Servicos servicos) {
+    public CompraController(EntityManager entityManager, ServicoEmail servicoEmail) {
         this.entityManager = entityManager;
-        this.servicos = servicos;
+        this.servicoEmail = servicoEmail;
     }
 
     @PostMapping
@@ -38,7 +38,7 @@ public class CompraController {
         if(produto.temEstoque(compra.getQuantidade())) {
             produto.abateEstoque(compra.getQuantidade());
             entityManager.persist(compra);
-            servicos.enviarEmailNovaCompra(produto);
+            servicoEmail.enviarEmailNovaCompra(produto);
             return compra.gerarUrlDeRetorno(uriComponentsBuilder);
         }
 

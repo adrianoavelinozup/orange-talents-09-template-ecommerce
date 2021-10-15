@@ -1,47 +1,44 @@
 package br.com.zupacademy.adriano.mercadolivre.transacao;
 
 import br.com.zupacademy.adriano.mercadolivre.compra.Compra;
-import br.com.zupacademy.adriano.mercadolivre.pergunta.Servicos;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.persistence.EntityManager;
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/transacoes")
 public class TransacaoController {
 
     private final EntityManager entityManager;
-    private final Servicos servicos;
+    private final EventosNovaCompra eventosNovaCompra;
 
-    public TransacaoController(EntityManager entityManager, Servicos servicos) {
+    public TransacaoController(EntityManager entityManager, EventosNovaCompra eventosNovaCompra) {
         this.entityManager = entityManager;
-        this.servicos = servicos;
+        this.eventosNovaCompra = eventosNovaCompra;
     }
 
-    @PostMapping
+    @PostMapping("/retorno-pagseguro/{id}")
     @Transactional
-    public void adicionar(@RequestBody @Valid TransacaoRequest transacaoRequest,
-                          UriComponentsBuilder uriComponentsBuilder,
-                          HttpServletRequest request) {
-        Transacao transacao = transacaoRequest.toModel(entityManager);
-        Compra compra = transacao.getCompra();
-        compra.adicionarTransacao(transacao);
+    public void processarPagSeguro(@PathVariable("id") Long compraId, @RequestBody @Valid TransacaoRequest transacaoRequest) {
+        this.processar(compraId, transacaoRequest);
+    }
 
-        if (transacao.isTransacaoComSucesso()) {
-            compra.concluirCompra(transacao);
-            entityManager.merge(compra);
-            servicos.comunicarSistemaNF(compra, request.getHeader("Authorization"));
-            servicos.comunicarSistemaRankingVendedores(compra, request.getHeader("Authorization"));
-            servicos.enviarEmailCompraConcluida(compra);
-            return;
-        }
-        servicos.enviarEmailPgamentoComFalha(compra, uriComponentsBuilder);
+    @PostMapping("/retorno-paypal/{id}")
+    @Transactional
+    public void processarPaypal(@PathVariable("id") Long compraId, @RequestBody @Valid TransacaoRequest transacaoRequest) {
+        this.processar(compraId, transacaoRequest);
+    }
+
+    private  void processar(Long compraId, TransacaoRequest transacaoRequest) {
+        Compra compra = entityManager.find(Compra.class, compraId);
+        Transacao transacao = transacaoRequest.toModel(compra);
+        compra.adicionarTransacao(transacao);
+        compra.concluir(transacao);
+        entityManager.merge(compra);
+        eventosNovaCompra.processar(compra);
     }
 }

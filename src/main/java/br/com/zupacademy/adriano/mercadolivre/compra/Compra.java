@@ -14,8 +14,10 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "compras")
@@ -58,8 +60,9 @@ public class Compra {
     private Usuario usuario;
 
     @Valid
-    @OneToMany(mappedBy = "compra", cascade = {CascadeType.ALL})
-    private Set<Transacao> transacoes;
+    @NotNull
+    @OneToMany(mappedBy = "compra", cascade = CascadeType.MERGE)
+    private Set<Transacao> transacoes = new HashSet<>();
 
     @Deprecated
     public Compra() {
@@ -101,22 +104,6 @@ public class Compra {
         return formaPagamento.getGatewayPagamento().criarUrlDeRetorno(this,uriComponentsBuilder);
     }
 
-    public void adicionarTransacao(Transacao transacao) {
-        boolean ehCompraIniciada = this.status == Status.INICIADA;
-        Assert.isTrue(ehCompraIniciada, "Compra já está concluída");
-
-        boolean jaEstaCadastrada = !this.transacoes.contains(transacao);
-        Assert.isTrue(jaEstaCadastrada, "Esta transação já está salva no banco de dados");
-
-        this.transacoes.add(transacao);
-    }
-
-    public void concluirCompra(Transacao transacao) {
-        boolean ehTransacaoComSucesso = transacao.getStatusTransacao() == StatusTransacao.SUCESSO && this.status == Status.INICIADA;
-        Assert.isTrue(ehTransacaoComSucesso,"Não é possível concluir compra com erro");
-        this.status = Status.CONCLUIDA;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -128,5 +115,32 @@ public class Compra {
     @Override
     public int hashCode() {
         return Objects.hash(id, formaPagamento);
+    }
+
+    public void adicionarTransacao(@Valid Transacao transacao) {
+        Assert.isTrue(!this.transacoes.contains(transacao), "Esta transação já está cadastrada ");
+        Assert.isTrue(transacoesConcluidasComSucesso().isEmpty(),"Esta compra já foi concluída com sucesso. Você não pode alterar uma compra concluída");
+
+        this.transacoes.add(transacao);
+    }
+
+    private Set<Transacao> transacoesConcluidasComSucesso() {
+        Set<Transacao> transacoesConcluidasComSucesso = this.transacoes.stream()
+                .filter(Transacao::concluidaComSucesso)
+                .collect(Collectors.toSet());
+
+        Assert.isTrue(transacoesConcluidasComSucesso.size() <= 1,"Uma transação concluída com sucesso na compra "+this.id);
+
+        return transacoesConcluidasComSucesso;
+    }
+
+    public void concluir(Transacao transacao) {
+        if (transacao.getStatusTransacao().equals(StatusTransacao.SUCESSO)) {
+            this.status = Status.CONCLUIDA;
+        }
+    }
+
+    public boolean processadaComSucesso() {
+        return !transacoesConcluidasComSucesso().isEmpty();
     }
 }

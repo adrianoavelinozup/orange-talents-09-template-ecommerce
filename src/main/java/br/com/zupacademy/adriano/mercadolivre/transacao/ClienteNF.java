@@ -9,5 +9,5 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @FeignClient(name = "nf", url = "http://localhost:8080/servicos/nf")
 public interface ClienteNF {
     @RequestMapping(method = RequestMethod.POST, value = "/{compraId}/{usuarioId}")
-    void enviar(@PathVariable Long usuarioId, @PathVariable Long compraId, @RequestHeader("Authorization") String token);
+    void enviar(@PathVariable Long usuarioId, @PathVariable Long compraId);
 }

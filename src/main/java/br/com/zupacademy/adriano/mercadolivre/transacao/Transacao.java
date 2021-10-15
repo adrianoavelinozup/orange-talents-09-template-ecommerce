@@ -4,6 +4,7 @@ import br.com.zupacademy.adriano.mercadolivre.compra.Compra;
 
 import javax.persistence.*;
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -15,14 +16,13 @@ public class Transacao {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank
+    private String transacaoId;
+
     @NotNull
     @Valid
     @ManyToOne(fetch = FetchType.LAZY)
     private Compra compra;
-
-    @NotNull
-    @Column(nullable = false)
-    private Long pagamentoId;
 
     @NotNull
     @Enumerated(EnumType.STRING)
@@ -37,23 +37,21 @@ public class Transacao {
     public Transacao() {
     }
 
-    public Transacao(Compra compra, Long pagamentoId, StatusTransacao statusTransacao) {
-        this.compra = compra;
-        this.pagamentoId = pagamentoId;
+    public Transacao(@NotNull StatusTransacao statusTransacao,
+                     @NotBlank String transacaoId,
+                     @NotNull Compra compra) {
         this.statusTransacao = statusTransacao;
+        this.transacaoId = transacaoId;
+        this.compra = compra;
         dataCriacao = LocalDateTime.now();
-    }
-
-    public Long getPagamentoId() {
-        return pagamentoId;
     }
 
     public StatusTransacao getStatusTransacao() {
         return statusTransacao;
     }
 
-    public Compra getCompra() {
-        return compra;
+    public boolean concluidaComSucesso() {
+        return statusTransacao.equals(StatusTransacao.SUCESSO);
     }
 
     @Override
@@ -61,16 +59,11 @@ public class Transacao {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Transacao transacao = (Transacao) o;
-        return compra.equals(transacao.compra) && pagamentoId.equals(transacao.pagamentoId);
+        return transacaoId.equals(transacao.transacaoId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(compra, pagamentoId);
+        return Objects.hash(transacaoId);
     }
-
-    public boolean isTransacaoComSucesso() {
-        return StatusTransacao.SUCESSO.equals(this.statusTransacao);
-   }
-
 }
