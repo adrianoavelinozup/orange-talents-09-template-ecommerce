@@ -1,6 +1,7 @@
 package br.com.zupacademy.adriano.mercadolivre.usuario;
 
 import br.com.zupacademy.adriano.mercadolivre.validacoes.ValorUnico;
+import com.fasterxml.jackson.annotation.JsonCreator;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -26,5 +27,13 @@ public class UsuarioRequest {
 
     public Usuario toModel() {
         return new Usuario(this.email, new SenhaLimpa(this.senha)) ;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getSenha() {
+        return senha;
     }
 }
